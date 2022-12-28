@@ -42,7 +42,8 @@ $(document).ready(function() {
             for (let i=0; i<8; i++){
               (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('meowy')
             }  
-            var weatherConditions = ['','Humidity','Temp','Wind']            
+            var weatherConditions = ['','Humidity','Temp','Wind']
+            var weatherUnits = ['','%','K','KPH']            
             for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
                 if (j==0){
@@ -54,9 +55,9 @@ $(document).ready(function() {
                 }
                 else {
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()]}<td>`);
+                  nrow.append(`<td>${result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()]} ${weatherUnits[j]}<td>`);
                   if (todayLastForecast.length>1){
-                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()]}<td>`);
+                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()]} ${weatherUnits[j]}<td>`);
                   }
                 }
                 tableWeather.append(nrow);
