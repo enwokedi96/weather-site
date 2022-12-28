@@ -11,7 +11,11 @@ $(document).ready(function() {
     
     // get location on click event 
     $('#search-button').on('click',function(event){
+        // prevent default input clear
         event.preventDefault();
+        // border desidn around todays forecast
+        today.css({'border':'solid 1px black', 'padding':'10px'})
+
         countryInput = $('#search-input').val();
         console.log(countryInput);
         lonLatURL = `http://api.openweathermap.org/geo/1.0/direct?q=${countryInput}&limit=${searchLimit}&appid=${apiKey}` 
@@ -31,8 +35,15 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
           }).done(function(result) {
-            console.log(result); //(JSON.stringify(response));
-            today.append(`<h2>${result.city.name} Today (${moment().format("MMM Do YY")})</h2>`);
+            console.log(result);
+            todayHeading = $('<div></div>'); //style={display:"inline-block"}
+            todayHeading.append(`<h2>${result.city.name} Today (${moment().format("MMM Do YY")})</h2>`);
+            
+            // attach icon for current weather (not working yet)
+            console.log(result.list[0].weather[0].main.toLowerCase())
+            //todayHeading.append(`<i class="fa-solid fa-cloud"></i>`)
+
+            today.append(todayHeading);
             var tableWeather = $("<table></table>")
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
             console.log(splitDatetime)
@@ -46,13 +57,21 @@ $(document).ready(function() {
             var weatherUnits = ['','%','K','KPH']            
             for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
+                // headers for time
                 if (j==0){
-                  console.log(result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2])
                   nrow.append('<th>    </th>');
                   nrow.append(`<th>${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2]}<th>`);
                   if (todayLastForecast.length>1){
                     nrow.append(`<th>${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2]}<th>`);}
                 }
+                // load wind conditions
+                else if (j==3){
+                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
+                  nrow.append(`<td>${result.list[todayLastForecast[0]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);
+                  if (todayLastForecast.length>1){
+                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);}
+                }
+                // load other weather conditions
                 else {
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
                   nrow.append(`<td>${result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()]} ${weatherUnits[j]}<td>`);
