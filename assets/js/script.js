@@ -76,10 +76,20 @@ $(document).ready(function() {
                 }
                 // load other weather conditions
                 else {
+                  var weatherVal = result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()];
+                  // convert kelvin to degree celcius
+                  if (weatherConditions[j]=='Temp'){
+                    weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                  }
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()]} ${weatherUnits[j]}<td>`);
+                  nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
                   if (todayLastForecast.length>1){
-                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()]} ${weatherUnits[j]}<td>`);
+                    var weatherVal = result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()];
+                    // convert kelvin to degree celcius
+                    if (weatherConditions[j]=='Temp'){
+                      weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                    }
+                    nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
                   }
                 }
                 tableWeather.append(nrow);
