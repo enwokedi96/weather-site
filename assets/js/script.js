@@ -13,7 +13,9 @@ $(document).ready(function() {
     $('#search-button').on('click',function(event){
         // prevent default input clear
         event.preventDefault();
-        // border desidn around todays forecast
+
+        // clear and add border design around todays forecast
+        today.html("");
         today.css({'border':'solid 1px black', 'padding':'10px'})
 
         countryInput = $('#search-input').val();
@@ -46,7 +48,7 @@ $(document).ready(function() {
             today.append(todayHeading);
             var tableWeather = $("<table></table>")
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
-            console.log(splitDatetime)
+            
             // search within 18 hours for the last-listed 
             // forecast of today
             var todayLastForecast = []
