@@ -8,6 +8,8 @@ $(document).ready(function() {
     var searchLimit = 1;
     var today = $('#today')
     var forecast = $('#forecast')
+    var searchForm = $('#search-form')
+    var searchFormistory = $('<div></div>')
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     // object to store weather for both today and 5-day forecast 
@@ -229,11 +231,12 @@ $(document).ready(function() {
             forecast.append(forecastContainer);
             console.log(storeCurrentSearch)
 
-            // save to memory
-            localStorage.setItem(`${result.city.name}`,JSON.stringify(storeCurrentSearch))
-
+            // save all weather forecasts to memory
+            localStorage.setItem(`${result.city.name}`,JSON.stringify(storeCurrentSearch));
+            searchFormistory.append(`<button type="button" class="btn btn-info btn-block">${result.city.name}</button>`);
           })
         })
+      searchForm.append(searchFormistory);
     })
 
 }
