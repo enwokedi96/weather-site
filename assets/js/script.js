@@ -80,7 +80,7 @@ $(document).ready(function() {
                   var weatherVal = result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()];
                   // convert kelvin to degree celcius
                   if (weatherConditions[j]=='Temp'){
-                    weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                    weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
                   }
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
                   nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
@@ -88,7 +88,7 @@ $(document).ready(function() {
                     var weatherVal = result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()];
                     // convert kelvin to degree celcius
                     if (weatherConditions[j]=='Temp'){
-                      weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                      weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
                     }
                     nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
                   }
@@ -164,7 +164,7 @@ $(document).ready(function() {
                   var weatherVal = result.list[forecastRelevantIndices[l][0]].main[weatherConditions[j].toLowerCase()];
                   // convert kelvin to degree celcius
                   if (weatherConditions[j]=='Temp'){
-                    weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                    weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                   }
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
                   nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
@@ -172,7 +172,7 @@ $(document).ready(function() {
                     var weatherVal = result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].main[weatherConditions[j].toLowerCase()];
                     // convert kelvin to degree celcius
                     if (weatherConditions[j]=='Temp'){
-                      weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                      weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                     }
                     nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
                   }
