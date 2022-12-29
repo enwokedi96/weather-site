@@ -47,7 +47,7 @@ $(document).ready(function() {
             //todayHeading.append(`<i class="fa-solid fa-cloud"></i>`)
 
             today.append(todayHeading);
-            var tableWeather = $("<table></table>")
+            var tableWeather = $("<table id='todayTable'></table>")
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
             
             // search within 18 hours for the last-listed 
@@ -96,6 +96,24 @@ $(document).ready(function() {
                 tableWeather.append(nrow);
             } 
             today.append(tableWeather);
+            // read and save tablular data to array and consequently, localStorage
+            var arr=[]
+            $('#todayTable').find('tr').each(function(index,item){
+              var wTime1=$(item).find('th').eq(1).text();
+              var wTime2=$(item).find('th').eq(3).text();
+              var wValue1=$(item).find('td').eq(1).text();
+              var wValue2=$(item).find('td').eq(2).text();
+              var wValue3=$(item).find('td').eq(3).text();
+              arr.push([wTime1,wTime2,wValue1,wValue2,wValue3])
+            });
+  
+            // filter out all empty placeholders
+            for (let i=0;i<arr.length;i++){
+              arr[i] = arr[i].filter((x) => x !== "")
+            }
+            console.log(arr)
+
+//--------------------------------------------------------------------------------------------------//
 
             // clear and add border design around todays forecast
             forecast.html("");
