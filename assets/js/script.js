@@ -242,5 +242,55 @@ $(document).ready(function() {
       searchForm.append(searchFormHistory);
     })
 
+    searchFormHistory.on("click", function(event){
+      event.preventDefault();
+      var countryClicked = event.target.id;
+      var allWeather = JSON.parse(localStorage.getItem(countryClicked));
+      //console.log(allWeather)
+      // clear all previously displayed forecast
+      today.html("");
+      forecast.html("");
+
+      for (let i=0; i<Object.keys(allWeather).length; i++){
+        var tableWeather = $("<table></table>");
+        // load today weather from persistent storage
+        if (i==0){
+          todayHeading = $('<div></div>'); //style={display:"inline-block"}
+          todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
+          today.append(todayHeading);
+          for (let j=0; j<4; j++){
+            var nrow = $('<tr>')
+            // headers for time
+            if (j==0){
+              nrow.append('<th>    </th>');
+              nrow.append(`<th>${allWeather[i][0][j][0]}<th>`);
+              if (allWeather[i][0][j].length>1){
+                nrow.append(`<th>${allWeather[i][0][j][1]}<th>`);}
+            }
+            // load wind conditions
+            else if (j==3){
+              nrow.append(`<td>${weatherConditions[j]}: </td>`);
+              nrow.append(`<td>${allWeather[i][0][j][0]}<th>`);
+              if (allWeather[i][0][j].length>1){
+                nrow.append(`<td>${allWeather[i][0][j][1]}<th>`);}
+            }
+            // load other weather conditions
+            else {
+              var weatherVal = allWeather[i][0][j][0]
+              nrow.append(`<td>${weatherConditions[j]}: </td>`);
+              nrow.append(`<td>${weatherVal}<td>`);
+              if (allWeather[i][0][j].length>1){
+                var weatherVal = allWeather[i][0][j][1]
+                nrow.append(`<td>${weatherVal}<td>`);
+              }
+            }
+            tableWeather.append(nrow);
+        } 
+        today.append(tableWeather);
+        }
+      }
+      
+  })
+  
 }
 )
