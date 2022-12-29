@@ -9,7 +9,7 @@ $(document).ready(function() {
     var today = $('#today')
     var forecast = $('#forecast')
     var searchForm = $('#search-form')
-    var searchFormistory = $('<div></div>')
+    var searchFormHistory = $('<div></div>')
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     // object to store weather for both today and 5-day forecast 
@@ -51,9 +51,10 @@ $(document).ready(function() {
         today.css({'border':'solid 1px black', 'padding':'10px'})
 
         countryInput = $('#search-input').val();
-        console.log(countryInput);
+        //console.log(countryInput);
         lonLatURL = `http://api.openweathermap.org/geo/1.0/direct?q=${countryInput}&limit=${searchLimit}&appid=${apiKey}` 
         
+        $('#search-input').val("")
         // get locations latitude and longitude 
         $.ajax({
           url: lonLatURL,
@@ -233,10 +234,12 @@ $(document).ready(function() {
 
             // save all weather forecasts to memory
             localStorage.setItem(`${result.city.name}`,JSON.stringify(storeCurrentSearch));
-            searchFormistory.append(`<button type="button" class="btn btn-info btn-block">${result.city.name}</button>`);
+            // ensure there are no duplicate buttons and then prepend
+            $(`#${result.city.name}`).remove();
+            searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block" id="${result.city.name}">${result.city.name}</button>`);
           })
         })
-      searchForm.append(searchFormistory);
+      searchForm.append(searchFormHistory);
     })
 
 }
