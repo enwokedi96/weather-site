@@ -13,7 +13,7 @@ $(document).ready(function() {
     $('#search-button').on('click',function(event){
         // prevent default input clear
         event.preventDefault();
-
+        
         // clear and add border design around todays forecast
         today.html("");
         today.css({'border':'solid 1px black', 'padding':'10px'})
@@ -39,7 +39,7 @@ $(document).ready(function() {
           }).done(function(result) {
             console.log(result);
             todayHeading = $('<div></div>'); //style={display:"inline-block"}
-            todayHeading.append(`<h2>${result.city.name} Today (${moment().format("MMM Do YY")})</h2>`);
+            todayHeading.append(`<h2>${result.city.name} Today (${moment().format('LL')})</h2>`);
             
             // attach icon for current weather (not working yet)
             console.log(result.list[0].weather[0].main.toLowerCase())
@@ -50,21 +50,22 @@ $(document).ready(function() {
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
             
             // search within 18 hours for the last-listed 
-            // forecast of today
+            // forecast of current day
             var todayLastForecast = []
             for (let i=0; i<8; i++){
               (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('meowy')
             }  
+            // loop rows and display times, weather conditions and values
             var weatherConditions = ['','Humidity','Temp','Wind']
-            var weatherUnits = ['','%','K','KPH']            
+            var weatherUnits = ['','%','°C','KPH']            
             for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
                 // headers for time
                 if (j==0){
                   nrow.append('<th>    </th>');
-                  nrow.append(`<th>${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2]}<th>`);
+                  nrow.append(`<th>${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
                   if (todayLastForecast.length>1){
-                    nrow.append(`<th>${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2]}<th>`);}
+                    nrow.append(`<th>${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);}
                 }
                 // load wind conditions
                 else if (j==3){
@@ -84,9 +85,40 @@ $(document).ready(function() {
                 tableWeather.append(nrow);
             } 
             today.append(tableWeather);
+            // search API data for next 5 days and save relevant indices
+            var forecastOne=[];
+            var forecastTwo=[];
+            var forecastThree=[];
+            var forecastFour=[];
+            var forecastFive=[];
+            //console.log(parseInt(moment().add(3, 'days').format('L').slice(3,5)))
+            //console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().format('L').slice(3,5))
+      
+            for (let k=0; k<result.list.length; k++){
+              console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().add(1, 'days').format('L').slice(3,5))
+              if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(1, 'days').format('L').slice(3,5)){
+                forecastOne.push(k);}
+              else if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(2, 'days').format('L').slice(3,5)){
+                forecastTwo.push(k);}
+              else if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(3, 'days').format('L').slice(3,5)){
+                forecastThree.push(k);}
+              else if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(4, 'days').format('L').slice(3,5)){
+                forecastFour.push(k);}
+              else if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(5, 'days').format('L').slice(3,5)){
+                forecastFive.push(k);}
+              else {continue;}
+            }
+            console.log(forecastOne,forecastThree,forecastFive)
           })
         })
-        
+      // load forecasts for each successive day (5 days)
+      var forecastContainer = $("<div class='container'></div>")
+      var forecastRow = $("<div class='row'></div>")
+      var blankCol = $("<div class='col-lg-1'></div>")
+      for (let l=0; l<5; l++){
+        var forecastCol = $("<div class='col-lg-1 pb-3'></div>")
+        forecastCol.append()
+      }
     })
 
 }
