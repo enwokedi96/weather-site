@@ -11,6 +11,7 @@ $(document).ready(function() {
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     // object to store weather for both today and 5-day forecast 
+    // index 0 corresponds to today and subsequent indices to forecasted days
     var storeCurrentSearch = {0:[],
                               1:[],
                               2:[],
@@ -127,9 +128,6 @@ $(document).ready(function() {
             // save to object
             tableToArray(tableWeather,0)
 
-            // save to memory
-            //localStorage.setItem(`${result.city.name}`,JSON.stringify(arr))
-
 //--------------------------------------------------------------------------------------------------//
 
             // clear and add border design around todays forecast
@@ -229,10 +227,13 @@ $(document).ready(function() {
             }
             forecastContainer.append(forecastRow)
             forecast.append(forecastContainer);
-            //console.log(storeCurrentSearch)
+            console.log(storeCurrentSearch)
+
+            // save to memory
+            localStorage.setItem(`${result.city.name}`,JSON.stringify(storeCurrentSearch))
+
           })
         })
-        console.log(storeCurrentSearch)
     })
 
 }
