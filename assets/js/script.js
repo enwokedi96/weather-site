@@ -37,7 +37,7 @@ $(document).ready(function() {
           $.ajax({
             url: queryURL,
             method: "GET"
-          }).done(function(result) {
+          }).then(function(result) {
             console.log(result);
             todayHeading = $('<div></div>'); //style={display:"inline-block"}
             todayHeading.append(`<h2>${result.city.name} Today (${moment().format('LL')})</h2>`);
@@ -96,6 +96,9 @@ $(document).ready(function() {
                 tableWeather.append(nrow);
             } 
             today.append(tableWeather);
+
+            // clear and add border design around todays forecast
+            forecast.html("");
             // search API data for next 5 days and save relevant indices
             var forecastOne=[];
             var forecastTwo=[];
@@ -138,6 +141,7 @@ $(document).ready(function() {
                             'margin' : '5px',
                             'padding': '5px',
                             'border':'solid black 1px',
+                            'border-radius':'5px',
                             'left':'8px',
                             'width':'auto','height':'auto','display':'table'})
               
