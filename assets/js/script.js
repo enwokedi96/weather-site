@@ -58,7 +58,7 @@ $(document).ready(function() {
             }  
             // loop rows and display times, weather conditions and values
             var weatherConditions = ['','Humidity','Temp','Wind']
-            var weatherUnits = ['','%','°C','KPH']            
+            var weatherUnits = ['','%','°C','kph']            
             for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
                 // headers for time
@@ -99,14 +99,13 @@ $(document).ready(function() {
 
             // clear and add border design around todays forecast
             forecast.html("");
+
             // search API data for next 5 days and save relevant indices
             var forecastOne=[];
             var forecastTwo=[];
             var forecastThree=[];
             var forecastFour=[];
             var forecastFive=[];
-            //console.log(parseInt(moment().add(3, 'days').format('L').slice(3,5)))
-            //console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().format('L').slice(3,5))
       
             for (let k=0; k<result.list.length; k++){
               console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().add(1, 'days').format('L').slice(3,5))
@@ -123,26 +122,25 @@ $(document).ready(function() {
               else {continue;}
             }
 
+            // save all arrays of forecasts in single array
             forecastRelevantIndices=[forecastOne,forecastTwo,forecastThree,forecastFour,forecastFive]
-            //console.log(forecastRelevantIndices)
 
             // load forecasts for each successive day (5 days)
             var forecastContainer = $("<div class='container'></div>")
             var forecastRow = $("<div class='row'></div>")
-            
+            forecastContainer.append("<h2>5-Day Forecast: </h2>")
             for (let l=0; l<forecastRelevantIndices.length; l++){
               var tableWeather = $("<table></table>")
               var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
               var forecastDate = moment().add(l+1, 'days').format('L');
-              var blankCol = $("<div class='col-1'></div>")
               // append forecast date on column
               forecastCol.css({'background-color':'gray',
                             'color' : 'white',
-                            'margin' : '5px',
+                            'margin' : '2px',
                             'padding': '5px',
                             'border':'solid black 1px',
-                            'border-radius':'5px',
-                            'left':'8px',
+                            'border-radius':'10px',
+                            'left':'2px',
                             'width':'auto','height':'auto','display':'table'})
               
               forecastCol.append(`<h3>${forecastDate}</h3>`);
@@ -159,9 +157,9 @@ $(document).ready(function() {
                 // load wind conditions
                 else if (j==3){
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][0]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);
+                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][0]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}<th>`);
                   if (forecastRelevantIndices[l].length>1){
-                    nrow.append(`<td>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);}
+                    nrow.append(`<td>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}<th>`);}
                 }
                 // load other weather conditions
                 else {
@@ -171,14 +169,14 @@ $(document).ready(function() {
                     weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                   }
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
+                  nrow.append(`<td>${weatherVal}${weatherUnits[j]}<td>`);
                   if (forecastRelevantIndices[l].length>1){
                     var weatherVal = result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].main[weatherConditions[j].toLowerCase()];
                     // convert kelvin to degree celcius
                     if (weatherConditions[j]=='Temp'){
                       weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                     }
-                    nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
+                    nrow.append(`<td>${weatherVal}${weatherUnits[j]}<td>`);
                   }
                 }
               // append relevant headers and weather content into col
@@ -186,10 +184,6 @@ $(document).ready(function() {
               forecastCol.append(tableWeather)
             }
             forecastRow.append(forecastCol)
-            // if (l<forecastRelevantIndices.length-1){
-            //   //blankCol.css('background-color','red')
-            //   forecastRow.append(blankCol);
-            // }
             }
             forecastContainer.append(forecastRow)
             forecast.append(forecastContainer);
