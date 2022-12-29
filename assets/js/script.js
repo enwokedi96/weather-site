@@ -131,6 +131,13 @@ $(document).ready(function() {
               var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
               var forecastDate = moment().add(l+1, 'days').format('L');
               var blankCol = $("<div class='col-lg-1'></div>")
+              // append forecast date on column
+              forecastCol.css({'width' : '100%',
+                            'background-color':'gray',
+                            'color' : 'white',
+                            'padding': '5px',
+                            'border':'solid black 1px'})
+              forecastCol.append(`<h3>${forecastDate}</h3>`);
               for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
                 // headers for time
@@ -168,11 +175,11 @@ $(document).ready(function() {
                 }
               // append relevant headers and weather content into col
               //tableWeather.append(nrow);
-              forecastCol.append(`<h3>${forecastDate}</h3>`);
               forecastCol.append(nrow)
             }
             forecastRow.append(forecastCol)
             if (l<forecastRelevantIndices.length-1){
+              //blankCol.css('background-color','red')
               forecastRow.append(blankCol);
             }
             }
