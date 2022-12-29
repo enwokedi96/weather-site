@@ -9,7 +9,8 @@ $(document).ready(function() {
     var today = $('#today')
     var forecast = $('#forecast')
     var apiKey = ""; 
-    
+    var weatherConditions = ['','Humidity','Temp','Wind']
+
     // get location on click event 
     $('#search-button').on('click',function(event){
         // prevent default input clear
@@ -57,7 +58,6 @@ $(document).ready(function() {
               (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('meowy')
             }  
             // loop rows and display times, weather conditions and values
-            var weatherConditions = ['','Humidity','Temp','Wind']
             var weatherUnits = ['','%','°C','kph']            
             for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
@@ -111,7 +111,10 @@ $(document).ready(function() {
             for (let i=0;i<arr.length;i++){
               arr[i] = arr[i].filter((x) => x !== "")
             }
-            console.log(arr)
+            console.log(result.city.name,arr)
+
+            // save to memory
+            localStorage.setItem(`${result.city.name}`,JSON.stringify(arr))
 
 //--------------------------------------------------------------------------------------------------//
 
