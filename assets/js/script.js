@@ -10,6 +10,33 @@ $(document).ready(function() {
     var forecast = $('#forecast')
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
+    // object to store weather for both today and 5-day forecast 
+    var storeCurrentSearch = {0:[],
+                              1:[],
+                              2:[],
+                              3:[],
+                              4:[],
+                              5:[]}
+
+    // read and save tablular data to array and consequently, localStorage
+    function tableToArray(tableId,objId){
+      var arr=[]
+      tableId.find('tr').each(function(index,item){
+        var wTime1=$(item).find('th').eq(1).text();
+        var wTime2=$(item).find('th').eq(3).text();
+        var wValue1=$(item).find('td').eq(1).text();
+        var wValue2=$(item).find('td').eq(2).text();
+        var wValue3=$(item).find('td').eq(3).text();
+        arr.push([wTime1,wTime2,wValue1,wValue2,wValue3]);
+      });
+
+      // filter out all empty placeholders
+      for (let i=0;i<arr.length;i++){
+        arr[i] = arr[i].filter((x) => x !== "");
+      }
+      storeCurrentSearch[objId].push(arr)
+      //console.log(arr)
+    }
 
     // get location on click event 
     $('#search-button').on('click',function(event){
@@ -54,7 +81,7 @@ $(document).ready(function() {
             // search within 18 hours for the last-listed 
             // forecast of current day
             var todayLastForecast = []
-            for (let i=0; i<8; i++){
+            for (let i=0; i<8; i++){ // 8 is used because the API stores in 3-hour intervals, which equals a max of 8 weather logs/day
               (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('meowy')
             }  
             // loop rows and display times, weather conditions and values
@@ -96,29 +123,12 @@ $(document).ready(function() {
                 tableWeather.append(nrow);
             } 
             today.append(tableWeather);
-            // read and save tablular data to array and consequently, localStorage
-            function tableToArray(tableId){
-              var arr=[]
-              $(`#${tableId}`).find('tr').each(function(index,item){
-                var wTime1=$(item).find('th').eq(1).text();
-                var wTime2=$(item).find('th').eq(3).text();
-                var wValue1=$(item).find('td').eq(1).text();
-                var wValue2=$(item).find('td').eq(2).text();
-                var wValue3=$(item).find('td').eq(3).text();
-                arr.push([wTime1,wTime2,wValue1,wValue2,wValue3]);
-              });
-    
-              // filter out all empty placeholders
-              for (let i=0;i<arr.length;i++){
-                arr[i] = arr[i].filter((x) => x !== "");
-              }
-              return arr;
-            }
-            arr = tableToArray('todayTable')
-            console.log(result.city.name,arr)
+            
+            // save to object
+            tableToArray(tableWeather,0)
 
             // save to memory
-            localStorage.setItem(`${result.city.name}`,JSON.stringify(arr))
+            //localStorage.setItem(`${result.city.name}`,JSON.stringify(arr))
 
 //--------------------------------------------------------------------------------------------------//
 
@@ -155,7 +165,8 @@ $(document).ready(function() {
             var forecastRow = $("<div class='row'></div>")
             forecastContainer.append("<h2>5-Day Forecast: </h2>")
             for (let l=0; l<forecastRelevantIndices.length; l++){
-              var tableWeather = $("<table></table>")
+              var forecastID = `forecast-${l+1}`
+              var tableWeather = $(`<table id='${forecastID}'></table>`)
               var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
               var forecastDate = moment().add(l+1, 'days').format('L');
               // append forecast date on column
@@ -206,15 +217,22 @@ $(document).ready(function() {
                 }
               // append relevant headers and weather content into col
               tableWeather.append(nrow);
-              forecastCol.append(tableWeather)
+              
+              //storeCurrentSearch[l+1].push(arr_)
+              //console.log(result.city.name,arr)
+              forecastCol.append(tableWeather);
             }
             forecastRow.append(forecastCol)
+
+            // store forecast data in collective object
+            tableToArray(tableWeather, l+1)
             }
             forecastContainer.append(forecastRow)
             forecast.append(forecastContainer);
+            //console.log(storeCurrentSearch)
           })
         })
-      
+        console.log(storeCurrentSearch)
     })
 
 }
