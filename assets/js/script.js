@@ -4,6 +4,7 @@ $(document).ready(function() {
     var lonLatURL;
     var queryURL
     var countryInput;
+    var forecastRelevantIndices;
     var searchLimit = 1;
     var today = $('#today')
     var forecast = $('#forecast')
@@ -118,17 +119,68 @@ $(document).ready(function() {
                 forecastFive.push(k);}
               else {continue;}
             }
-            console.log(forecastOne,forecastThree,forecastFive)
+
+            forecastRelevantIndices=[forecastOne,forecastTwo,forecastThree,forecastFour,forecastFive]
+            //console.log(forecastRelevantIndices)
+
+            // load forecasts for each successive day (5 days)
+            var forecastContainer = $("<div class='container'></div>")
+            var forecastRow = $("<div class='row'></div>")
+            
+            for (let l=0; l<forecastRelevantIndices.length; l++){
+              var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
+              var forecastDate = moment().add(l+1, 'days').format('L');
+              var blankCol = $("<div class='col-lg-1'></div>")
+              for (let j=0; j<4; j++){
+                var nrow = $('<tr>')
+                // headers for time
+                if (j==0){
+                  nrow.append('<th>    </th>');
+                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
+                  if (forecastRelevantIndices[l].length>1){
+                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
+                  }
+                }
+                // load wind conditions
+                else if (j==3){
+                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
+                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][0]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);
+                  if (forecastRelevantIndices[l].length>1){
+                    nrow.append(`<td>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);}
+                }
+                // load other weather conditions
+                else {
+                  var weatherVal = result.list[forecastRelevantIndices[l][0]].main[weatherConditions[j].toLowerCase()];
+                  // convert kelvin to degree celcius
+                  if (weatherConditions[j]=='Temp'){
+                    weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                  }
+                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
+                  nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
+                  if (forecastRelevantIndices[l].length>1){
+                    var weatherVal = result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].main[weatherConditions[j].toLowerCase()];
+                    // convert kelvin to degree celcius
+                    if (weatherConditions[j]=='Temp'){
+                      weatherVal = Math.round(((parseInt(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
+                    }
+                    nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
+                  }
+                }
+              // append relevant headers and weather content into col
+              //tableWeather.append(nrow);
+              forecastCol.append(`<h3>${forecastDate}</h3>`);
+              forecastCol.append(nrow)
+            }
+            forecastRow.append(forecastCol)
+            if (l<forecastRelevantIndices.length-1){
+              forecastRow.append(blankCol);
+            }
+            }
+            forecastContainer.append(forecastRow)
+            forecast.append(forecastContainer);
           })
         })
-      // load forecasts for each successive day (5 days)
-      var forecastContainer = $("<div class='container'></div>")
-      var forecastRow = $("<div class='row'></div>")
-      var blankCol = $("<div class='col-lg-1'></div>")
-      for (let l=0; l<5; l++){
-        var forecastCol = $("<div class='col-lg-1 pb-3'></div>")
-        forecastCol.append()
-      }
+      
     })
 
 }
