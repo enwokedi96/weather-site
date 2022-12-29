@@ -97,20 +97,24 @@ $(document).ready(function() {
             } 
             today.append(tableWeather);
             // read and save tablular data to array and consequently, localStorage
-            var arr=[]
-            $('#todayTable').find('tr').each(function(index,item){
-              var wTime1=$(item).find('th').eq(1).text();
-              var wTime2=$(item).find('th').eq(3).text();
-              var wValue1=$(item).find('td').eq(1).text();
-              var wValue2=$(item).find('td').eq(2).text();
-              var wValue3=$(item).find('td').eq(3).text();
-              arr.push([wTime1,wTime2,wValue1,wValue2,wValue3])
-            });
-  
-            // filter out all empty placeholders
-            for (let i=0;i<arr.length;i++){
-              arr[i] = arr[i].filter((x) => x !== "")
+            function tableToArray(tableId){
+              var arr=[]
+              $(`#${tableId}`).find('tr').each(function(index,item){
+                var wTime1=$(item).find('th').eq(1).text();
+                var wTime2=$(item).find('th').eq(3).text();
+                var wValue1=$(item).find('td').eq(1).text();
+                var wValue2=$(item).find('td').eq(2).text();
+                var wValue3=$(item).find('td').eq(3).text();
+                arr.push([wTime1,wTime2,wValue1,wValue2,wValue3]);
+              });
+    
+              // filter out all empty placeholders
+              for (let i=0;i<arr.length;i++){
+                arr[i] = arr[i].filter((x) => x !== "");
+              }
+              return arr;
             }
+            arr = tableToArray('todayTable')
             console.log(result.city.name,arr)
 
             // save to memory
