@@ -128,15 +128,19 @@ $(document).ready(function() {
             var forecastRow = $("<div class='row'></div>")
             
             for (let l=0; l<forecastRelevantIndices.length; l++){
+              var tableWeather = $("<table></table>")
               var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
               var forecastDate = moment().add(l+1, 'days').format('L');
-              var blankCol = $("<div class='col-lg-1'></div>")
+              var blankCol = $("<div class='col-1'></div>")
               // append forecast date on column
-              forecastCol.css({'width' : '100%',
-                            'background-color':'gray',
+              forecastCol.css({'background-color':'gray',
                             'color' : 'white',
+                            'margin' : '5px',
                             'padding': '5px',
-                            'border':'solid black 1px'})
+                            'border':'solid black 1px',
+                            'left':'8px',
+                            'width':'auto','height':'auto','display':'table'})
+              
               forecastCol.append(`<h3>${forecastDate}</h3>`);
               for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
@@ -174,14 +178,14 @@ $(document).ready(function() {
                   }
                 }
               // append relevant headers and weather content into col
-              //tableWeather.append(nrow);
-              forecastCol.append(nrow)
+              tableWeather.append(nrow);
+              forecastCol.append(tableWeather)
             }
             forecastRow.append(forecastCol)
-            if (l<forecastRelevantIndices.length-1){
-              //blankCol.css('background-color','red')
-              forecastRow.append(blankCol);
-            }
+            // if (l<forecastRelevantIndices.length-1){
+            //   //blankCol.css('background-color','red')
+            //   forecastRow.append(blankCol);
+            // }
             }
             forecastContainer.append(forecastRow)
             forecast.append(forecastContainer);
