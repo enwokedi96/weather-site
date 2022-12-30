@@ -86,7 +86,8 @@ $(document).ready(function() {
             //todayHeading.append(`<i class="fa-solid fa-cloud"></i>`)
 
             today.append(todayHeading);
-            var tableWeather = $("<table id='todayTable'></table>")
+            var tableWeather = $("<table id='todayTable'></table>");
+            tableWeather.css({'table-layout': 'fixed','width':'50%'})
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
             
             // search within 18 hours for the last-listed 
@@ -101,11 +102,12 @@ $(document).ready(function() {
                 var nrow = $('<tr>')
                 // headers for time
                 if (j==0){
-                  nrow.append('<th>    </th>');
+                  nrow.append('<th>    </th>'); 
                   nrow.append(`<th>${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
                   if (todayLastForecast.length>1){
                     nrow.append(`<th>${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);}
-                }
+                  }
+                
                 // load wind conditions
                 else if (j==3){
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
@@ -253,6 +255,7 @@ $(document).ready(function() {
       searchForm.append(searchFormHistory);
     })
 
+    // listen for user click of buttons in search history
     searchFormHistory.on("click", function(event){
       event.preventDefault();
       var countryClicked = event.target.id;
@@ -270,6 +273,7 @@ $(document).ready(function() {
       for (let i=0; i<Object.keys(allWeather).length; i++){
         if (i==0){
           var tableWeather = $("<table></table>");
+          tableWeather.css({'table-layout': 'fixed','width':'50%'})
           todayHeading = $('<div></div>'); //style={display:"inline-block"}
           todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
