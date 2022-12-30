@@ -12,6 +12,7 @@ $(document).ready(function() {
     var searchFormHistory = $('<div></div>')
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
+
     // object to store weather for both today and 5-day forecast 
     // index 0 corresponds to today and subsequent indices to forecasted days
     // remove records of old object
@@ -30,21 +31,30 @@ $(document).ready(function() {
     // read and save tablular data to array and consequently, localStorage
     function tableToArray(tableId,objId){
       var arr=[]
-      tableId.find('tr').each(function(index,item){
+      if(objId==0){  tableId.find('tr').each(function(index,item){
+          var wTime1=$(item).find('th').eq(1).text();
+          var wTime2=$(item).find('th').eq(2).text();
+          var wTime3=$(item).find('th').eq(3).text();
+          var wTime4=$(item).find('th').eq(4).text();
+          var wValue1=$(item).find('td').eq(1).text();
+          var wValue2=$(item).find('td').eq(2).text();
+          var wValue3=$(item).find('td').eq(3).text();
+          var wValue4=$(item).find('td').eq(4).text();
+          arr.push([wTime1,wTime2,wTime3,wTime4,wValue1,wValue2,wValue3,wValue4]);})
+      }
+      else {tableId.find('tr').each(function(index,item){
         var wTime1=$(item).find('th').eq(1).text();
-        var wTime2=$(item).find('th').eq(3).text();
+        var wTime2=$(item).find('th').eq(2).text();
         var wValue1=$(item).find('td').eq(1).text();
         var wValue2=$(item).find('td').eq(2).text();
         var wValue3=$(item).find('td').eq(3).text();
-        arr.push([wTime1,wTime2,wValue1,wValue2,wValue3]);
-      });
+        arr.push([wTime1,wTime2,wValue1,wValue2,wValue3]);})
+      }
 
-      // filter out all empty placeholders
+      // filter out all empty placeholders (if any)
       for (let i=0;i<arr.length;i++){
         arr[i] = arr[i].filter((x) => x !== "");
       }
-      //storeCurrentSearch[objId].push(arr)
-      //console.log(arr)
       return arr;
     }
 
@@ -69,7 +79,6 @@ $(document).ready(function() {
         }).then(function(response) {
           lon = response[0].lon;
           lat = response[0].lat;
-          //console.log(lon,lat) //(JSON.stringify(response));
           queryURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
           // load weather and forecasts using longitude and latitude
@@ -81,9 +90,7 @@ $(document).ready(function() {
             todayHeading = $('<div></div>'); //style={display:"inline-block"}
             todayHeading.append(`<h2>${result.city.name} Today (${moment().format('LL')})</h2>`);
             
-            // attach icon for current weather (not working yet)
-            console.log(result.list[0].weather[0].main.toLowerCase())
-            //todayHeading.append(`<i class="fa-solid fa-cloud"></i>`)
+            //console.log(result.list[0].weather[0].main.toLowerCase())
 
             today.append(todayHeading);
             var tableWeather = $("<table id='todayTable'></table>");
@@ -134,9 +141,9 @@ $(document).ready(function() {
             } 
             today.append(tableWeather);
             
-            // save to object
+            // save to object, save to persistent storage
             arr = tableToArray(tableWeather,0)
-            storeCurrentSearch[0] = arr //.push(arr)
+            storeCurrentSearch[0] = arr 
 
 //--------------------------------------------------------------------------------------------------//
 
@@ -151,7 +158,7 @@ $(document).ready(function() {
             var forecastFive=[];
       
             for (let k=0; k<result.list.length; k++){
-              console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().add(1, 'days').format('L').slice(3,5))
+              //console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().add(1, 'days').format('L').slice(3,5))
               if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(1, 'days').format('L').slice(3,5)){
                 forecastOne.push(k);}
               else if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(2, 'days').format('L').slice(3,5)){
@@ -193,17 +200,17 @@ $(document).ready(function() {
                 // headers for time
                 if (j==0){
                   nrow.append('<th>    </th>');
-                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
+                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}</th>`);
                   if (forecastRelevantIndices[l].length>1){
-                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
+                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}</th>`);
                   }
                 }
                 // load wind conditions
                 else if (j==3){
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][0]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}<th>`);
+                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][0]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}</td>`);
                   if (forecastRelevantIndices[l].length>1){
-                    nrow.append(`<td>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}<th>`);}
+                    nrow.append(`<td>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}</td>`);}
                 }
                 // load other weather conditions
                 else {
@@ -213,28 +220,24 @@ $(document).ready(function() {
                     weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                   }
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${weatherVal}${weatherUnits[j]}<td>`);
+                  nrow.append(`<td>${weatherVal}${weatherUnits[j]}</td>`);
                   if (forecastRelevantIndices[l].length>1){
                     var weatherVal = result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].main[weatherConditions[j].toLowerCase()];
                     // convert kelvin to degree celcius
                     if (weatherConditions[j]=='Temp'){
                       weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                     }
-                    nrow.append(`<td>${weatherVal}${weatherUnits[j]}<td>`);
+                    nrow.append(`<td>${weatherVal}${weatherUnits[j]}</td>`);
                   }
                 }
               // append relevant headers and weather content into col
               tableWeather.append(nrow);
-              
-              //storeCurrentSearch[l+1].push(arr_)
-              //console.log(result.city.name,arr)
               forecastCol.append(tableWeather);
             }
             forecastRow.append(forecastCol)
 
             // store forecast data in collective object
-            //tableToArray(tableWeather, l+1)
-            // save to object
+            // save to storage
             arr = tableToArray(tableWeather,l+1)
             storeCurrentSearch[l+1] = arr //.push(arr)
             }
