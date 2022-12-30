@@ -288,32 +288,36 @@ $(document).ready(function() {
 
       // load all weather from persistent storage
       for (let i=0; i<Object.keys(allWeather).length; i++){
+        // load todays section
         if (i==0){
           var tableWeather = $("<table></table>");
-          tableWeather.css({'table-layout': 'fixed','width':'50%'})
-          todayHeading = $('<div></div>'); //style={display:"inline-block"}
+          tableWeather.css({'table-layout': 'fixed','width':'75%'})
+          todayHeading = $('<div></div>'); 
           todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
           for (let j=0; j<4; j++){
             var nrow = $('<tr>')
-            // headers for time
-            if (j==0){
-              nrow.append('<th>    </th>');
-              nrow.append(`<th>${allWeather[i][j][0]}<th>`);
-              if (allWeather[i][j].length>1){
-                nrow.append(`<th>${allWeather[i][j][1]}<th>`);}
-            }
-            // load other todays-weather conditions from storage
-            else {
-              var weatherVal = allWeather[i][j][0]
-              nrow.append(`<td>${weatherConditions[j]}: </td>`);
-              nrow.append(`<td>${weatherVal}<td>`);
-              if (allWeather[i][j].length>1){
-                var weatherVal = allWeather[i][j][1]
-                nrow.append(`<td>${weatherVal}<td>`);
+            if (j==0) {nrow.append('<th></th>'); }
+            else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
+            for (let k=0; k<allWeather[i][0].length; k++){
+              // headers for time
+              if (j==0){
+                var iconCode = '10d' //`${result.list[todayLastForecast[k]].weather[0].icon}`;
+                var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
+                var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+                var headPlusImg = $(`<th></th>`); 
+                headPlusImg.html(`${allWeather[i][j][k]}`);
+                headPlusImg.append(iconImg); 
+                nrow.append(headPlusImg);
+                }
+
+              // load other weather conditions
+              else {
+                var weatherVal = allWeather[i][j][k]
+                nrow.append(`<td>${weatherVal}</td>`);
               }
             }
-            tableWeather.append(nrow);
+            tableWeather.append(nrow)
         } 
         today.append(tableWeather);
         }
