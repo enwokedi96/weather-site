@@ -87,67 +87,50 @@ $(document).ready(function() {
 
             today.append(todayHeading);
             var tableWeather = $("<table id='todayTable'></table>");
-            tableWeather.css({'table-layout': 'fixed','width':'50%'})
+            tableWeather.css({'table-layout': 'fixed','width':'75%'})
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
             
             // search within 18 hours for the last-listed 
             // forecast of current day
             var todayLastForecast = []
             for (let i=0; i<8; i++){ // 8 is used because the API stores in 3-hour intervals, which equals a max of 8 weather logs/day
-              (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('meowy')
+              (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('no more data for today')
             }  
             
             // loop rows and display times, weather conditions and values
             var weatherUnits = ['','%','°C','kph']            
             for (let j=0; j<4; j++){
-                var nrow = $('<tr>')
+              var nrow = $('<tr>')
+              if (j==0) {nrow.append('<th>    </th>'); }
+              else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
+              for (let k=0; k<todayLastForecast.length; k++){
                 // headers for time
                 if (j==0){
-                  nrow.append('<th>    </th>'); 
-                  var iconCode = `${result.list[todayLastForecast[0]].weather[0].icon}`
+                  //nrow.append('<th>    </th>'); 
+                  var iconCode = `${result.list[todayLastForecast[k]].weather[0].icon}`
                   var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`
                   var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
                   var headPlusImg = $(`<th></th>`); 
-                  headPlusImg.html(`${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`)
+                  headPlusImg.html(`${result.list[todayLastForecast[k]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`)
                   headPlusImg.append(iconImg); 
                   nrow.append(headPlusImg);
-                  if (todayLastForecast.length>1){
-                    var iconCode = `${result.list[todayLastForecast[todayLastForecast.length-1]].weather[0].icon}`
-                    var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`
-                    var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
-                    var headPlusImg = $(`<th class='tableHead'></th>`); $('.tableHead').css({'right':'20px'})
-                    headPlusImg.html(`${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`)
-                    headPlusImg.append(iconImg);
-                    nrow.append(headPlusImg);
-                  }
                   }
                 
                 // load wind conditions
                 else if (j==3){
-                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[todayLastForecast[0]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}</td>`);
-                  if (todayLastForecast.length>1){
-                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}</td>`);}
+                  nrow.append(`<td>${result.list[todayLastForecast[k]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}</td>`);
                 }
                 // load other weather conditions
                 else {
-                  var weatherVal = result.list[todayLastForecast[0]].main[weatherConditions[j].toLowerCase()];
+                  var weatherVal = result.list[todayLastForecast[k]].main[weatherConditions[j].toLowerCase()];
                   // convert kelvin to degree celcius
                   if (weatherConditions[j]=='Temp'){
                     weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
                   }
-                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
                   nrow.append(`<td>${weatherVal} ${weatherUnits[j]}</td>`);
-                  if (todayLastForecast.length>1){
-                    var weatherVal = result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()];
-                    // convert kelvin to degree celcius
-                    if (weatherConditions[j]=='Temp'){
-                      weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
-                    }
-                    nrow.append(`<td>${weatherVal} ${weatherUnits[j]}</td>`);
-                  }
                 }
-                tableWeather.append(nrow);
+              }
+              tableWeather.append(nrow);
             } 
             today.append(tableWeather);
             
