@@ -96,6 +96,7 @@ $(document).ready(function() {
             for (let i=0; i<8; i++){ // 8 is used because the API stores in 3-hour intervals, which equals a max of 8 weather logs/day
               (result.list[i].dt_txt.split(/(\s+)/)[0]==splitDatetime[0])?todayLastForecast.push(i):console.log('meowy')
             }  
+            
             // loop rows and display times, weather conditions and values
             var weatherUnits = ['','%','°C','kph']            
             for (let j=0; j<4; j++){
@@ -103,17 +104,30 @@ $(document).ready(function() {
                 // headers for time
                 if (j==0){
                   nrow.append('<th>    </th>'); 
-                  nrow.append(`<th>${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);
+                  var iconCode = `${result.list[todayLastForecast[0]].weather[0].icon}`
+                  var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`
+                  var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+                  var headPlusImg = $(`<th></th>`); 
+                  headPlusImg.html(`${result.list[todayLastForecast[0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`)
+                  headPlusImg.append(iconImg); 
+                  nrow.append(headPlusImg);
                   if (todayLastForecast.length>1){
-                    nrow.append(`<th>${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}<th>`);}
+                    var iconCode = `${result.list[todayLastForecast[todayLastForecast.length-1]].weather[0].icon}`
+                    var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`
+                    var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+                    var headPlusImg = $(`<th class='tableHead'></th>`); $('.tableHead').css({'right':'20px'})
+                    headPlusImg.html(`${result.list[todayLastForecast[todayLastForecast.length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`)
+                    headPlusImg.append(iconImg);
+                    nrow.append(headPlusImg);
+                  }
                   }
                 
                 // load wind conditions
                 else if (j==3){
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[todayLastForecast[0]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);
+                  nrow.append(`<td>${result.list[todayLastForecast[0]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}</td>`);
                   if (todayLastForecast.length>1){
-                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}<th>`);}
+                    nrow.append(`<td>${result.list[todayLastForecast[todayLastForecast.length-1]][weatherConditions[j].toLowerCase()].speed} ${weatherUnits[j]}</td>`);}
                 }
                 // load other weather conditions
                 else {
@@ -123,14 +137,14 @@ $(document).ready(function() {
                     weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
                   }
                   nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
+                  nrow.append(`<td>${weatherVal} ${weatherUnits[j]}</td>`);
                   if (todayLastForecast.length>1){
                     var weatherVal = result.list[todayLastForecast[todayLastForecast.length-1]].main[weatherConditions[j].toLowerCase()];
                     // convert kelvin to degree celcius
                     if (weatherConditions[j]=='Temp'){
                       weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 //parseInt(weatherVal) - 273.15
                     }
-                    nrow.append(`<td>${weatherVal} ${weatherUnits[j]}<td>`);
+                    nrow.append(`<td>${weatherVal} ${weatherUnits[j]}</td>`);
                   }
                 }
                 tableWeather.append(nrow);
