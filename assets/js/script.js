@@ -14,13 +14,19 @@ $(document).ready(function() {
     var weatherConditions = ['','Humidity','Temp','Wind']
     // object to store weather for both today and 5-day forecast 
     // index 0 corresponds to today and subsequent indices to forecasted days
-    var storeCurrentSearch = {0:[],
-                              1:[],
-                              2:[],
-                              3:[],
-                              4:[],
-                              5:[]}
+    // remove records of old object
+    if (typeof storeCurrentSearch !== "undefined") {
+      Object.keys(storeCurrentSearch).forEach(item => delete storeCurrentSearch[item])
+    }
 
+    var storeCurrentSearch = new Object(); //
+    storeCurrentSearch[0] = [];
+    storeCurrentSearch[1] = [];
+    storeCurrentSearch[2] = [];
+    storeCurrentSearch[3] = [];
+    storeCurrentSearch[4] = [];
+    storeCurrentSearch[5] = [];
+                           
     // read and save tablular data to array and consequently, localStorage
     function tableToArray(tableId,objId){
       var arr=[]
@@ -37,8 +43,9 @@ $(document).ready(function() {
       for (let i=0;i<arr.length;i++){
         arr[i] = arr[i].filter((x) => x !== "");
       }
-      storeCurrentSearch[objId].push(arr)
+      //storeCurrentSearch[objId].push(arr)
       //console.log(arr)
+      return arr;
     }
 
     // get location on click event 
@@ -129,7 +136,8 @@ $(document).ready(function() {
             today.append(tableWeather);
             
             // save to object
-            tableToArray(tableWeather,0)
+            arr = tableToArray(tableWeather,0)
+            storeCurrentSearch[0] = arr //.push(arr)
 
 //--------------------------------------------------------------------------------------------------//
 
@@ -226,7 +234,10 @@ $(document).ready(function() {
             forecastRow.append(forecastCol)
 
             // store forecast data in collective object
-            tableToArray(tableWeather, l+1)
+            //tableToArray(tableWeather, l+1)
+            // save to object
+            arr = tableToArray(tableWeather,l+1)
+            storeCurrentSearch[l+1] = arr //.push(arr)
             }
             forecastContainer.append(forecastRow)
             forecast.append(forecastContainer);
@@ -251,10 +262,15 @@ $(document).ready(function() {
       today.html("");
       forecast.html("");
 
+      var forecastContainer = $("<div class='container'></div>")
+      var forecastRow = $("<div class='row'></div>")
+      forecastContainer.append("<h2>5-Day Forecast: </h2>")
+
       for (let i=0; i<Object.keys(allWeather).length; i++){
-        var tableWeather = $("<table></table>");
+        
         // load today weather from persistent storage
         if (i==0){
+          var tableWeather = $("<table></table>");
           todayHeading = $('<div></div>'); //style={display:"inline-block"}
           todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
@@ -263,24 +279,17 @@ $(document).ready(function() {
             // headers for time
             if (j==0){
               nrow.append('<th>    </th>');
-              nrow.append(`<th>${allWeather[i][0][j][0]}<th>`);
-              if (allWeather[i][0][j].length>1){
-                nrow.append(`<th>${allWeather[i][0][j][1]}<th>`);}
-            }
-            // load wind conditions
-            else if (j==3){
-              nrow.append(`<td>${weatherConditions[j]}: </td>`);
-              nrow.append(`<td>${allWeather[i][0][j][0]}<th>`);
-              if (allWeather[i][0][j].length>1){
-                nrow.append(`<td>${allWeather[i][0][j][1]}<th>`);}
+              nrow.append(`<th>${allWeather[i][j][0]}<th>`);
+              if (allWeather[i][j].length>1){
+                nrow.append(`<th>${allWeather[i][j][1]}<th>`);}
             }
             // load other weather conditions
             else {
-              var weatherVal = allWeather[i][0][j][0]
+              var weatherVal = allWeather[i][j][0]
               nrow.append(`<td>${weatherConditions[j]}: </td>`);
               nrow.append(`<td>${weatherVal}<td>`);
-              if (allWeather[i][0][j].length>1){
-                var weatherVal = allWeather[i][0][j][1]
+              if (allWeather[i][j].length>1){
+                var weatherVal = allWeather[i][j][1]
                 nrow.append(`<td>${weatherVal}<td>`);
               }
             }
@@ -288,7 +297,51 @@ $(document).ready(function() {
         } 
         today.append(tableWeather);
         }
+
+        // still in the works
+        else {
+          var forecastID = `forecast-${i}`
+          var tableWeather = $(`<table id='${forecastID}'></table>`)
+          var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
+          var forecastDate = moment().add(i, 'days').format('L');
+          // append forecast date on column
+          forecastCol.css({'background-color':'gray',
+                            'color' : 'white',
+                            'margin' : '2px',
+                            'padding': '5px',
+                            'border':'solid black 1px',
+                            'border-radius':'10px',
+                            'left':'2px',
+                            'width':'auto','height':'auto','display':'table'})
+              
+          forecastCol.append(`<h3>${forecastDate}</h3>`);
+          for (let j=0; j<4; j++){
+            var nrow = $('<tr>')
+            // headers for time
+            if (j==0){
+              nrow.append('<th>    </th>');
+              nrow.append(`<th>${allWeather[i][j][0]}<th>`);
+              if (allWeather[i][j].length>1){
+                nrow.append(`<th>${allWeather[i][j][1]}<th>`);}
+            }
+            // load other weather conditions
+            else {
+              var weatherVal = allWeather[i][j][0]
+              nrow.append(`<td>${weatherConditions[j]}: </td>`);
+              nrow.append(`<td>${weatherVal}<td>`);
+              if (allWeather[i][j].length>1){
+                var weatherVal = allWeather[i][j][1]
+                nrow.append(`<td>${weatherVal}<td>`);
+              }
+            }
+            tableWeather.append(nrow);
+        } 
+        forecastCol.append(tableWeather);
+        forecastRow.append(forecastCol)
+        }
       }
+      forecastContainer.append(forecastRow)
+      forecast.append(forecastContainer);
       
   })
   
