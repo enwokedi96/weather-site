@@ -108,17 +108,16 @@ $(document).ready(function() {
             var weatherUnits = ['','%','°C','kph']            
             for (let j=0; j<4; j++){
               var nrow = $('<tr>')
-              if (j==0) {nrow.append('<th>    </th>'); }
+              if (j==0) {nrow.append('<th></th>'); }
               else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
               for (let k=0; k<todayLastForecast.length; k++){
                 // headers for time
                 if (j==0){
-                  //nrow.append('<th>    </th>'); 
-                  var iconCode = `${result.list[todayLastForecast[k]].weather[0].icon}`
-                  var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`
+                  var iconCode = `${result.list[todayLastForecast[k]].weather[0].icon}`;
+                  var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
                   var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
                   var headPlusImg = $(`<th></th>`); 
-                  headPlusImg.html(`${result.list[todayLastForecast[k]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`)
+                  headPlusImg.html(`${result.list[todayLastForecast[k]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`);
                   headPlusImg.append(iconImg); 
                   nrow.append(headPlusImg);
                   }
@@ -192,34 +191,52 @@ $(document).ready(function() {
                             'border':'solid black 1px',
                             'border-radius':'10px',
                             'left':'2px',
-                            'width':'auto','height':'auto','display':'table'})
-              
+                            'width':'auto','height':'auto','display':'table'})          
               forecastCol.append(`<h3>${forecastDate}</h3>`);
+
+              // for forecasts, time should display 09:00 and 21:00 for days (today+1) till (today+4), and then
+              // display first and last available forecasts for day (today+5)
+              if (forecastRelevantIndices[l].length==8){var timeIndex = 3}
+              else {var timeIndex = 0}
+
               for (let j=0; j<4; j++){
                 var nrow = $('<tr>')
-                // headers for time
+                // add space and weather names 
+                if (j==0) {nrow.append('<th></th>'); }
+                else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
+
+                // headers: time and icons
                 if (j==0){
-                  nrow.append('<th>    </th>');
-                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][0]].dt_txt.split(/(\s+)/)[2].slice(0,5)}</th>`);
+                  var iconCode = `${result.list[forecastRelevantIndices[l][timeIndex]].weather[0].icon}`;
+                  var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
+                  var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+                  var headPlusImg = $(`<th></th>`); 
+                  headPlusImg.html(`${result.list[forecastRelevantIndices[l][timeIndex]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`);
+                  headPlusImg.append(iconImg); 
+                  nrow.append(headPlusImg);
                   if (forecastRelevantIndices[l].length>1){
-                  nrow.append(`<th>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}</th>`);
+                    var iconCode = `${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].weather[0].icon}`;
+                    var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
+                    var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+                    var headPlusImg = $(`<th></th>`); 
+                    headPlusImg.html(`${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].dt_txt.split(/(\s+)/)[2].slice(0,5)}`);
+                    headPlusImg.append(iconImg); 
+                    nrow.append(headPlusImg);                    
                   }
                 }
                 // load wind conditions
                 else if (j==3){
-                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
-                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][0]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}</td>`);
+                  nrow.append(`<td>${result.list[forecastRelevantIndices[l][timeIndex]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}</td>`);
                   if (forecastRelevantIndices[l].length>1){
                     nrow.append(`<td>${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]][weatherConditions[j].toLowerCase()].speed}${weatherUnits[j]}</td>`);}
                 }
                 // load other weather conditions
                 else {
-                  var weatherVal = result.list[forecastRelevantIndices[l][0]].main[weatherConditions[j].toLowerCase()];
+                  var weatherVal = result.list[forecastRelevantIndices[l][timeIndex]].main[weatherConditions[j].toLowerCase()];
                   // convert kelvin to degree celcius
                   if (weatherConditions[j]=='Temp'){
                     weatherVal = Math.round(((parseFloat(weatherVal) - 273.15) + Number.EPSILON) * 100) / 100 ;
                   }
-                  nrow.append(`<td>${weatherConditions[j]}: </td>`);
                   nrow.append(`<td>${weatherVal}${weatherUnits[j]}</td>`);
                   if (forecastRelevantIndices[l].length>1){
                     var weatherVal = result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].main[weatherConditions[j].toLowerCase()];
