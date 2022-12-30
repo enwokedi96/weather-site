@@ -266,9 +266,8 @@ $(document).ready(function() {
       var forecastRow = $("<div class='row'></div>")
       forecastContainer.append("<h2>5-Day Forecast: </h2>")
 
+      // load all weather from persistent storage
       for (let i=0; i<Object.keys(allWeather).length; i++){
-        
-        // load today weather from persistent storage
         if (i==0){
           var tableWeather = $("<table></table>");
           todayHeading = $('<div></div>'); //style={display:"inline-block"}
@@ -283,7 +282,7 @@ $(document).ready(function() {
               if (allWeather[i][j].length>1){
                 nrow.append(`<th>${allWeather[i][j][1]}<th>`);}
             }
-            // load other weather conditions
+            // load other todays-weather conditions from storage
             else {
               var weatherVal = allWeather[i][j][0]
               nrow.append(`<td>${weatherConditions[j]}: </td>`);
@@ -298,7 +297,7 @@ $(document).ready(function() {
         today.append(tableWeather);
         }
 
-        // still in the works
+        // now works!!! 5-day forecast loading from persistent storage
         else {
           var forecastID = `forecast-${i}`
           var tableWeather = $(`<table id='${forecastID}'></table>`)
@@ -342,7 +341,6 @@ $(document).ready(function() {
       }
       forecastContainer.append(forecastRow)
       forecast.append(forecastContainer);
-      
   })
   
 }
