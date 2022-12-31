@@ -14,6 +14,14 @@ $(document).ready(function() {
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
+    const forecastColDesigns = {'background-color':'gray',
+                                'color' : 'white',
+                                'margin' : '5px',
+                                'padding': '5px',
+                                'border':'solid black 1px',
+                                'border-radius':'10px',
+                                'left':'2px',
+                                'width':'auto','height':'auto','display':'table'};
 
     // object to store weather for both today and 5-day forecast 
     // index 0 corresponds to today and subsequent indices to forecasted days
@@ -79,6 +87,23 @@ $(document).ready(function() {
       return arr;
     }
 
+    // add button to clear history and page if need be
+    var clearDiv = $('<div id="clear"></div>');
+    var clearButton = $(`<button type="button" class="btn btn-danger btn-block mt-3">Clear Page</button>`); 
+    clearButton.css({'position': 'sticky',
+                    'bottom': '4px',
+                    'right': '6px',
+                    'border-radius':'50%'})
+    clearDiv.append(clearButton);
+    searchFormHistory.append(clearDiv);
+
+    $('#clear').on('click', function(){
+        //searchFormHistory.empty();
+        console.log('clear all buttons!!')
+        document.querySelectorAll('.btn-info').forEach(e => e.remove());
+        today.css({'border':'0px'})
+      })
+
     // get location on click event 
     $('#search-button').on('click',function(event){
         // prevent default input clear
@@ -86,7 +111,6 @@ $(document).ready(function() {
         
         // clear and add border design around todays forecast
         today.html("");
-        today.css({'border':'solid 1px black', 'padding':'10px'})
 
         cityInput = $('#search-input').val();
         //console.log(countryInput);
@@ -106,7 +130,7 @@ $(document).ready(function() {
           $.ajax({
             url: queryURL,
             method: "GET"
-          }).then(function(result) {
+          }).done(function(result) {
             //console.log(result); 
             searchCity = `${result.city.name}`;
             todayHeading = $('<div></div>'); //style={display:"inline-block"}
@@ -117,6 +141,7 @@ $(document).ready(function() {
             //console.log(result.list[0].weather[0].main.toLowerCase())
 
             today.append(todayHeading);
+            today.css({'border':'solid 1px black', 'padding':'10px'})
             var tableWeather = $("<table id='todayTable'></table>");
             tableWeather.css({'table-layout': 'fixed','width':'75%'})
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
@@ -214,14 +239,7 @@ $(document).ready(function() {
               var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
               var forecastDate = moment().add(l+1, 'days').format('L');
               // append forecast date on column
-              forecastCol.css({'background-color':'gray',
-                            'color' : 'white',
-                            'margin' : '5px',
-                            'padding': '5px',
-                            'border':'solid black 1px',
-                            'border-radius':'10px',
-                            'left':'2px',
-                            'width':'auto','height':'auto','display':'table'})          
+              forecastCol.css(forecastColDesigns);          
               forecastCol.append(`<h4>${forecastDate}</h4>`);
 
               // for forecasts, time should display 09:00 and 21:00 for days (today+1) till (today+4), and then
@@ -377,14 +395,7 @@ $(document).ready(function() {
           var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
           var forecastDate = moment().add(i, 'days').format('L');
           // append forecast date on column
-          forecastCol.css({'background-color':'gray',
-                            'color' : 'white',
-                            'margin' : '5px',
-                            'padding': '5px',
-                            'border':'solid black 1px',
-                            'border-radius':'10px',
-                            'left':'2px',
-                            'width':'auto','height':'auto','display':'table'})
+          forecastCol.css(forecastColDesigns)
               
           forecastCol.append(`<h4>${forecastDate}</h4>`);
           for (let j=0; j<numDisplayRows; j++){
