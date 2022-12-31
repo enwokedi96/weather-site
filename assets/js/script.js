@@ -100,6 +100,7 @@ $(document).ready(function() {
     $('#clear').on('click', function(){
         console.log('clear history and page!!');
         document.querySelectorAll('.btn-info').forEach(e => e.remove());
+        today.html(""); forecast.html("");
         today.css({'border':'0px'});
         localStorage.clear();
       })
