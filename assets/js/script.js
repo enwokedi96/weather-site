@@ -12,6 +12,7 @@ $(document).ready(function() {
     var searchFormHistory = $('<div></div>')
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
+    const numDisplayRows = 4;
 
     // object to store weather for both today and 5-day forecast 
     // index 0 corresponds to today and subsequent indices to forecasted days
@@ -119,7 +120,7 @@ $(document).ready(function() {
             
             // loop rows and display times, weather conditions and values
             var weatherUnits = ['','%','°C','kph']            
-            for (let j=0; j<4; j++){
+            for (let j=0; j<numDisplayRows; j++){
               var nrow = $('<tr>')
               if (j==0) {nrow.append('<th></th>'); }
               else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
@@ -212,7 +213,7 @@ $(document).ready(function() {
               if (forecastRelevantIndices[l].length==8){var timeIndex = 3}
               else {var timeIndex = 0}
 
-              for (let j=0; j<4; j++){
+              for (let j=0; j<numDisplayRows; j++){
                 var nrow = $('<tr>')
                 // add space and weather names 
                 if (j==0) {nrow.append('<th></th>'); }
@@ -310,7 +311,7 @@ $(document).ready(function() {
           todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
           // j: loop all rows dislayed in section/card
-          for (let j=0; j<4; j++){
+          for (let j=0; j<numDisplayRows; j++){
             var nrow = $('<tr>')
             if (j==0) {nrow.append('<th></th>'); }
             else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
@@ -355,7 +356,7 @@ $(document).ready(function() {
                             'width':'auto','height':'auto','display':'table'})
               
           forecastCol.append(`<h3>${forecastDate}</h3>`);
-          for (let j=0; j<4; j++){
+          for (let j=0; j<numDisplayRows; j++){
             var nrow = $('<tr>')
             // headers for time
             if (j==0){
