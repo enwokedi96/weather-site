@@ -3,7 +3,8 @@ $(document).ready(function() {
     var lat;
     var lonLatURL;
     var queryURL
-    var countryInput;
+    var cityInput;
+    var searchCity;
     var forecastRelevantIndices;
     var searchLimit = 1;
     var today = $('#today')
@@ -28,6 +29,8 @@ $(document).ready(function() {
     storeCurrentSearch[3] = [];
     storeCurrentSearch[4] = [];
     storeCurrentSearch[5] = [];
+
+    var storeIconCodes = new Object();
                            
     // read and save tablular data to array and consequently, localStorage
     function tableToArray(tableId,objId){
@@ -81,9 +84,9 @@ $(document).ready(function() {
         today.html("");
         today.css({'border':'solid 1px black', 'padding':'10px'})
 
-        countryInput = $('#search-input').val();
+        cityInput = $('#search-input').val();
         //console.log(countryInput);
-        lonLatURL = `http://api.openweathermap.org/geo/1.0/direct?q=${countryInput}&limit=${searchLimit}&appid=${apiKey}` 
+        lonLatURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=${searchLimit}&appid=${apiKey}` 
         
         $('#search-input').val("")
         // get locations latitude and longitude 
@@ -100,10 +103,13 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
           }).then(function(result) {
-            console.log(result);
+            //console.log(result); 
+            searchCity = `${result.city.name}`;
             todayHeading = $('<div></div>'); //style={display:"inline-block"}
-            todayHeading.append(`<h2>${result.city.name} Today (${moment().format('LL')})</h2>`);
-            
+            todayHeading.append(`<h2>${searchCity} Today (${moment().format('LL')})</h2>`);
+            // create empty placeholder for all current icons 
+            // corresponding to the search country
+            storeIconCodes[`${searchCity}`] = {}; 
             //console.log(result.list[0].weather[0].main.toLowerCase())
 
             today.append(todayHeading);
@@ -119,15 +125,18 @@ $(document).ready(function() {
             }  
             
             // loop rows and display times, weather conditions and values
-            var weatherUnits = ['','%','°C','kph']            
+            var weatherUnits = ['','%','°C','kph'];
+            var saveIconCodes = [];          
             for (let j=0; j<numDisplayRows; j++){
               var nrow = $('<tr>')
               if (j==0) {nrow.append('<th></th>'); }
               else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
+              // loop all available forecasts for today
               for (let k=0; k<todayLastForecast.length; k++){
                 // headers for time
                 if (j==0){
                   var iconCode = `${result.list[todayLastForecast[k]].weather[0].icon}`;
+                  saveIconCodes.push(`${iconCode}`);
                   var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
                   var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
                   var headPlusImg = $(`<th></th>`); 
@@ -153,6 +162,8 @@ $(document).ready(function() {
               tableWeather.append(nrow);
             } 
             today.append(tableWeather);
+            // save icon codes to current country and current-day index
+            storeIconCodes[`${searchCity}`][0] = saveIconCodes;
             
             // save to object, save to persistent storage
             arr = tableToArray(tableWeather,0)
@@ -160,7 +171,7 @@ $(document).ready(function() {
 
 //--------------------------------------------------------------------------------------------------//
 
-            // clear and add border design around todays forecast
+            // clear 5-day forecast of previous display
             forecast.html("");
 
             // search API data for next 5 days and save relevant indices
@@ -193,8 +204,9 @@ $(document).ready(function() {
             var forecastRow = $("<div class='row'></div>")
             forecastContainer.append("<h2>5-Day Forecast: </h2>")
             for (let l=0; l<forecastRelevantIndices.length; l++){
-              var forecastID = `forecast-${l+1}`
-              var tableWeather = $(`<table id='${forecastID}'></table>`)
+              var saveIconCodes = [];
+              var forecastID = `forecast-${l+1}`;
+              var tableWeather = $(`<table id='${forecastID}'></table>`);
               var forecastCol = $("<div class='col-lg-1 pb-3'></div>");
               var forecastDate = moment().add(l+1, 'days').format('L');
               // append forecast date on column
@@ -222,6 +234,7 @@ $(document).ready(function() {
                 // headers: time and icons
                 if (j==0){
                   var iconCode = `${result.list[forecastRelevantIndices[l][timeIndex]].weather[0].icon}`;
+                  saveIconCodes.push(iconCode);
                   var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
                   var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
                   var headPlusImg = $(`<th></th>`); 
@@ -230,6 +243,7 @@ $(document).ready(function() {
                   nrow.append(headPlusImg);
                   if (forecastRelevantIndices[l].length>1){
                     var iconCode = `${result.list[forecastRelevantIndices[l][forecastRelevantIndices[l].length-1]].weather[0].icon}`;
+                    saveIconCodes.push(iconCode);
                     var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
                     var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
                     var headPlusImg = $(`<th></th>`); 
@@ -267,24 +281,31 @@ $(document).ready(function() {
             }
             forecastRow.append(forecastCol)
 
+            // save icon codes to current country and current-day index
+            storeIconCodes[`${searchCity}`][l+1] = saveIconCodes;
+
             // store forecast data in collective object
             // save to storage
             arr = tableToArray(tableWeather,l+1)
-            storeCurrentSearch[l+1] = arr //.push(arr)
+            storeCurrentSearch[l+1] = arr 
             }
             forecastContainer.append(forecastRow)
             forecast.append(forecastContainer);
+
             console.log(storeCurrentSearch)
+            console.log(storeIconCodes)
 
             // save all weather forecasts to memory
-            localStorage.setItem(`${result.city.name}`,JSON.stringify(storeCurrentSearch));
+            localStorage.setItem(`${searchCity}`,JSON.stringify(storeCurrentSearch));
             // ensure there are no duplicate buttons and then prepend
-            $(`#${result.city.name}`).remove();
-            searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block" id="${result.city.name}">${result.city.name}</button>`);
+            $(`#${searchCity}`).remove();
+            searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block" id="${searchCity}">${searchCity}</button>`);
           })
         })
       searchForm.append(searchFormHistory);
     })
+
+//----------------------------------LOAD PREVIOUS SEARCH FROM STORAGE------------------------------------//
 
     // listen for user click of buttons in search history
     searchFormHistory.on("click", function(event){
