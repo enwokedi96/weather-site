@@ -134,21 +134,15 @@ $(document).ready(function() {
           url: lonLatURL,
           method: "GET"
         }).then(function(response) {
-          // check if api key is not entered or incorrect, prompt user to enter the required api key
-          if (apiKey == "") {
-            console.log('please check if your open weather api key is pasted correctly'); 
-            //$('#clear').trigger( "click" );
-            today.html(""); forecast.html("");
-            today.css({'border':'solid 1px black', 'padding':'10px'})
-            today.text("Please ensure correct API key is entered!")}
 
-          // check condition when there is no response
-          if (response.length == 0) {
+          if (response.length==0) {
             console.log('null response'); 
             //$('#clear').trigger( "click" );
             today.html(""); forecast.html("");
             today.css({'border':'solid 1px black', 'padding':'10px'})
-            today.text("City not found! Please try again or enter different city...")}
+            today.text("City not found! Please try again or enter different city...");
+          }
+          
           lon = response[0].lon;
           lat = response[0].lat;
           queryURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
@@ -354,7 +348,17 @@ $(document).ready(function() {
             searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block mt-2" id="${searchCity}">${searchCity}</button>`);
             
           })
-        }).catch((err) => console.log(`Here's the error ${err}`));
+        // check if api key is not entered or incorrect, prompt user to enter the required api key
+        }).catch((response)=> {
+          console.log(response)
+          // check condition when there is no response
+          if (response.responseJSON.cod == 401) {
+            console.log('Wrong open weather api key! Please check if pasted correctly'); 
+            today.html(""); forecast.html("");
+            today.css({'border':'solid 1px black', 'padding':'10px'})
+            today.text(response.responseJSON.message)
+            $('#api-input').attr('disabled',false); }
+        });
       //searchForm.append(searchFormHistory);
     })
 
