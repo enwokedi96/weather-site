@@ -10,4 +10,9 @@ The entire website is split into 3 mainsections;
 
 The image of the working website is shown below.
 
-<img src= "assets/images/screenshot.png">
+<img src= "assets/images/screenshot2.png" alt="screenshot of weather site">
+
+## UPDATE: 
+To enable testing, new field for API key has been added to the header. Once pasted there, hit enter and now the script can run with your API key locally. Error checks and displays have also been added for the api key and city input (incase input is not found by API). Images for these scenarios are shown below:
+
+<img src= "assets/images/wrongCityInput.png" alt="wrongly input city"><img src= "assets/images/wrongAPIKey.png" alt="wrongly input API key">
