@@ -39,9 +39,6 @@ $(document).ready(function() {
 
     // object to store weather icon codes for today and 5-day forecasts
     var storeIconCodes = new Object();
-
-    // vain designs
-    //$('.weather-header').css({'background-image': 'linear-gradient(red, blue);'})
                            
     // read and save tablular data to array and consequently, localStorage
     function tableToArray(tableId,objId){
@@ -86,16 +83,20 @@ $(document).ready(function() {
       return arr;
     }
 
-    // add button to clear history and page if need be
+    // add button to clear history and page 
     var clearDiv = $('<div id="clear"></div>');
+    clearDiv.css({'border-top':'solid 3px black', 
+                  'margin-top':'20px',
+                  'margin-bottom':'50px'})
     var clearButton = $(`<button type="button" class="btn btn-danger btn-block mt-3">Clear Page</button>`); 
-    clearButton.css({'position': 'sticky',
-                    'bottom': '4px',
-                    'right': '6px',
+    clearButton.css({'position': 'relative',
+                    'border-top':'5px gray solid',
+                    'border-bottom':'5px gray solid',
                     'border-radius':'50%'})
     clearDiv.append(clearButton);
     searchFormHistory.append(clearDiv);
 
+    // add event to clear page and buttons 
     $('#clear').on('click', function(){
         console.log('clear all buttons!!')
         document.querySelectorAll('.btn-info').forEach(e => e.remove());
@@ -111,7 +112,6 @@ $(document).ready(function() {
         today.html("");
 
         cityInput = $('#search-input').val();
-        //console.log(countryInput);
         lonLatURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=${searchLimit}&appid=${apiKey}` 
         
         $('#search-input').val("")
@@ -131,12 +131,11 @@ $(document).ready(function() {
           }).done(function(result) {
             //console.log(result); 
             searchCity = `${result.city.name}`;
-            todayHeading = $('<div></div>'); //style={display:"inline-block"}
+            todayHeading = $('<div></div>');
             todayHeading.append(`<h2>${searchCity} Today (${moment().format('LL')})</h2>`);
             // create empty placeholder for all current icons 
             // corresponding to the search country
             storeIconCodes[`${searchCity}`] = {}; 
-            //console.log(result.list[0].weather[0].main.toLowerCase())
 
             today.append(todayHeading);
             today.css({'border':'solid 1px black', 'padding':'10px'})
@@ -201,15 +200,14 @@ $(document).ready(function() {
             // clear 5-day forecast of previous display
             forecast.html("");
 
-            // search API data for next 5 days and save relevant indices
+            // search API data for next 5 days 
             var forecastOne=[];
             var forecastTwo=[];
             var forecastThree=[];
             var forecastFour=[];
             var forecastFive=[];
-      
+            // loop API forecasts and compare dates with those of next 5 days, and save only relevant indices
             for (let k=0; k<result.list.length; k++){
-              //console.log(result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10),moment().add(1, 'days').format('L').slice(3,5))
               if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(1, 'days').format('L').slice(3,5)){
                 forecastOne.push(k);}
               else if (result.list[k].dt_txt.split(/(\s+)/)[0].slice(8,10)==moment().add(2, 'days').format('L').slice(3,5)){
