@@ -216,13 +216,13 @@ $(document).ready(function() {
               // append forecast date on column
               forecastCol.css({'background-color':'gray',
                             'color' : 'white',
-                            'margin' : '2px',
+                            'margin' : '5px',
                             'padding': '5px',
                             'border':'solid black 1px',
                             'border-radius':'10px',
                             'left':'2px',
                             'width':'auto','height':'auto','display':'table'})          
-              forecastCol.append(`<h3>${forecastDate}</h3>`);
+              forecastCol.append(`<h4>${forecastDate}</h4>`);
 
               // for forecasts, time should display 09:00 and 21:00 for days (today+1) till (today+4), and then
               // display first and last available forecasts for day (today+5)
@@ -379,14 +379,14 @@ $(document).ready(function() {
           // append forecast date on column
           forecastCol.css({'background-color':'gray',
                             'color' : 'white',
-                            'margin' : '2px',
+                            'margin' : '5px',
                             'padding': '5px',
                             'border':'solid black 1px',
                             'border-radius':'10px',
                             'left':'2px',
                             'width':'auto','height':'auto','display':'table'})
               
-          forecastCol.append(`<h3>${forecastDate}</h3>`);
+          forecastCol.append(`<h4>${forecastDate}</h4>`);
           for (let j=0; j<numDisplayRows; j++){
             var nrow = $('<tr>')
             // headers for time
