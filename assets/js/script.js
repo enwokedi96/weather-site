@@ -134,6 +134,14 @@ $(document).ready(function() {
           url: lonLatURL,
           method: "GET"
         }).then(function(response) {
+          // check if api key is not entered or incorrect, prompt user to enter the required api key
+          if (apiKey == "") {
+            console.log('please check if your open weather api key is pasted correctly'); 
+            //$('#clear').trigger( "click" );
+            today.html(""); forecast.html("");
+            today.css({'border':'solid 1px black', 'padding':'10px'})
+            today.text("Please ensure correct API key is entered!")}
+
           // check condition when there is no response
           if (response.length == 0) {
             console.log('null response'); 
@@ -346,7 +354,7 @@ $(document).ready(function() {
             searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block mt-2" id="${searchCity}">${searchCity}</button>`);
             
           })
-        })
+        }).catch((err) => console.log(`Here's the error ${err}`));
       //searchForm.append(searchFormHistory);
     })
 
