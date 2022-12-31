@@ -98,9 +98,10 @@ $(document).ready(function() {
 
     // add event to clear page and buttons 
     $('#clear').on('click', function(){
-        console.log('clear all buttons!!')
+        console.log('clear history and page!!');
         document.querySelectorAll('.btn-info').forEach(e => e.remove());
-        today.css({'border':'0px'})
+        today.css({'border':'0px'});
+        localStorage.clear();
       })
 
     // get location on click event 
