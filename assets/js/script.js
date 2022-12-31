@@ -31,17 +31,30 @@ $(document).ready(function() {
     // read and save tablular data to array and consequently, localStorage
     function tableToArray(tableId,objId){
       var arr=[]
+      // this examines table in todays section 8 times (i.e. full 24-hour day);
+      // null or unavailable forecasts will come up as empty strings
       if(objId==0){  tableId.find('tr').each(function(index,item){
           var wTime1=$(item).find('th').eq(1).text();
           var wTime2=$(item).find('th').eq(2).text();
           var wTime3=$(item).find('th').eq(3).text();
           var wTime4=$(item).find('th').eq(4).text();
+          var wTime5=$(item).find('th').eq(5).text();
+          var wTime6=$(item).find('th').eq(6).text();
+          var wTime7=$(item).find('th').eq(7).text();
+          var wTime8=$(item).find('th').eq(8).text();
+
           var wValue1=$(item).find('td').eq(1).text();
           var wValue2=$(item).find('td').eq(2).text();
           var wValue3=$(item).find('td').eq(3).text();
           var wValue4=$(item).find('td').eq(4).text();
-          arr.push([wTime1,wTime2,wTime3,wTime4,wValue1,wValue2,wValue3,wValue4]);})
+          var wValue5=$(item).find('td').eq(5).text();
+          var wValue6=$(item).find('td').eq(6).text();
+          var wValue7=$(item).find('td').eq(7).text();
+          var wValue8=$(item).find('td').eq(8).text();
+          arr.push([wTime1,wTime2,wTime3,wTime4,wTime5,wTime6,wTime7,wTime8,
+                wValue1,wValue2,wValue3,wValue4,wValue5,wValue6,wValue7,wValue8]);})
       }
+      // simpler version for 5-day forecast since only two entries are made
       else {tableId.find('tr').each(function(index,item){
         var wTime1=$(item).find('th').eq(1).text();
         var wTime2=$(item).find('th').eq(2).text();
@@ -287,6 +300,7 @@ $(document).ready(function() {
       forecastContainer.append("<h2>5-Day Forecast: </h2>")
 
       // load all weather from persistent storage
+      // i: loop all arrays in storage, each corresponding to a day
       for (let i=0; i<Object.keys(allWeather).length; i++){
         // load todays section
         if (i==0){
@@ -295,11 +309,13 @@ $(document).ready(function() {
           todayHeading = $('<div></div>'); 
           todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
+          // j: loop all rows dislayed in section/card
           for (let j=0; j<4; j++){
             var nrow = $('<tr>')
             if (j==0) {nrow.append('<th></th>'); }
             else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
-            for (let k=0; k<allWeather[i][0].length; k++){
+            // k:  loop all items in specific days' array
+            for (let k=0; k<allWeather[i][j].length; k++){
               // headers for time
               if (j==0){
                 var iconCode = '10d' //`${result.list[todayLastForecast[k]].weather[0].icon}`;
