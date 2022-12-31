@@ -134,6 +134,13 @@ $(document).ready(function() {
           url: lonLatURL,
           method: "GET"
         }).then(function(response) {
+          // check condition when there is no response
+          if (response.length == 0) {
+            console.log('null response'); 
+            //$('#clear').trigger( "click" );
+            today.html(""); forecast.html("");
+            today.css({'border':'solid 1px black', 'padding':'10px'})
+            today.text("City not found! Please try again or enter different city...")}
           lon = response[0].lon;
           lat = response[0].lat;
           queryURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
