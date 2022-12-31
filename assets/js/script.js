@@ -10,7 +10,7 @@ $(document).ready(function() {
     var today = $('#today')
     var forecast = $('#forecast')
     var searchForm = $('#search-form')
-    var searchFormHistory = $('<div></div>')
+    var searchFormHistory = $('#history'); //$('<div></div>')
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
@@ -30,6 +30,7 @@ $(document).ready(function() {
     storeCurrentSearch[4] = [];
     storeCurrentSearch[5] = [];
 
+    // object to store weather icon codes for today and 5-day forecasts
     var storeIconCodes = new Object();
                            
     // read and save tablular data to array and consequently, localStorage
@@ -302,7 +303,7 @@ $(document).ready(function() {
             searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block" id="${searchCity}">${searchCity}</button>`);
           })
         })
-      searchForm.append(searchFormHistory);
+      //searchForm.append(searchFormHistory);
     })
 
 //----------------------------------LOAD PREVIOUS SEARCH FROM STORAGE------------------------------------//
