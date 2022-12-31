@@ -9,8 +9,7 @@ $(document).ready(function() {
     var searchLimit = 1;
     var today = $('#today')
     var forecast = $('#forecast')
-    var searchForm = $('#search-form')
-    var searchFormHistory = $('#history'); //$('<div></div>')
+    var searchFormHistory = $('#history'); 
     var apiKey = ""; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
@@ -98,7 +97,6 @@ $(document).ready(function() {
     searchFormHistory.append(clearDiv);
 
     $('#clear').on('click', function(){
-        //searchFormHistory.empty();
         console.log('clear all buttons!!')
         document.querySelectorAll('.btn-info').forEach(e => e.remove());
         today.css({'border':'0px'})
@@ -245,6 +243,8 @@ $(document).ready(function() {
               // for forecasts, time should display 09:00 and 21:00 for days (today+1) till (today+4), and then
               // display first and last available forecasts for day (today+5)
               if (forecastRelevantIndices[l].length==8){var timeIndex = 3}
+              // specifically check last day (today+5) if it has ample time forecasts present
+              else if (forecastRelevantIndices[4].length>=5){var timeIndex = 3}
               else {var timeIndex = 0}
 
               for (let j=0; j<numDisplayRows; j++){
@@ -411,8 +411,6 @@ $(document).ready(function() {
               headPlusImg.append(iconImg); 
               nrow.append(headPlusImg);
 
-              // nrow.append('<th>    </th>');
-              // nrow.append(`<th>${allWeather[i][j][0]}<th>`);
               if (allWeather[i][j].length>1){
                 var iconCode = allIcons[i][1]; 
                 var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
@@ -421,10 +419,9 @@ $(document).ready(function() {
                 headPlusImg.html(`${allWeather[i][j][1]}`);
                 headPlusImg.append(iconImg); 
                 nrow.append(headPlusImg);
-                // nrow.append(`<th>${allWeather[i][j][1]}<th>`);
               }
             }
-            // load other weather conditions
+            // load weather conditions, values
             else {
               var weatherVal = allWeather[i][j][0]
               nrow.append(`<td>${weatherConditions[j]}: </td>`);
