@@ -103,7 +103,19 @@ $(document).ready(function() {
         today.html(""); forecast.html("");
         today.css({'border':'0px'});
         localStorage.clear();
+        // clear stored spi key and enable api input field again
+        apiKey = "";
+        $('#api-input').attr('disabled',false);
       })
+
+    // monitor change in api key input, grab key and disable input field
+    $('#api-input').on('change',function(event){
+        // prevent default input clear
+        event.preventDefault();
+        apiKey = $('#api-input').val();
+        $('#api-input').val('')
+        $('#api-input').attr('disabled',true); //remove();
+    })
 
     // get location on click event 
     $('#search-button').on('click',function(event){
