@@ -296,11 +296,15 @@ $(document).ready(function() {
             console.log(storeCurrentSearch)
             console.log(storeIconCodes)
 
+            // save icon object to storage
+            localStorage.setItem(`icons`,JSON.stringify(storeIconCodes));
             // save all weather forecasts to memory
             localStorage.setItem(`${searchCity}`,JSON.stringify(storeCurrentSearch));
+
             // ensure there are no duplicate buttons and then prepend
             $(`#${searchCity}`).remove();
             searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block" id="${searchCity}">${searchCity}</button>`);
+            
           })
         })
       //searchForm.append(searchFormHistory);
@@ -311,8 +315,10 @@ $(document).ready(function() {
     // listen for user click of buttons in search history
     searchFormHistory.on("click", function(event){
       event.preventDefault();
-      var countryClicked = event.target.id;
-      var allWeather = JSON.parse(localStorage.getItem(countryClicked));
+      var cityClicked = event.target.id;
+      var allWeather = JSON.parse(localStorage.getItem(cityClicked));
+      var allIcons = JSON.parse(localStorage.getItem('icons'));
+      allIcons = allIcons[cityClicked];
       //console.log(allWeather)
       // clear all previously displayed forecast
       today.html("");
@@ -330,7 +336,7 @@ $(document).ready(function() {
           var tableWeather = $("<table></table>");
           tableWeather.css({'table-layout': 'fixed','width':'75%'})
           todayHeading = $('<div></div>'); 
-          todayHeading.append(`<h2>${countryClicked} Today (${moment().format('LL')})</h2>`);
+          todayHeading.append(`<h2>${cityClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
           // j: loop all rows dislayed in section/card
           for (let j=0; j<numDisplayRows; j++){
@@ -339,9 +345,9 @@ $(document).ready(function() {
             else {nrow.append(`<td>${weatherConditions[j]}: </td>`);}
             // k:  loop all items in specific days' array
             for (let k=0; k<allWeather[i][j].length; k++){
-              // headers for time
+              // headers for time and icon
               if (j==0){
-                var iconCode = '10d' //`${result.list[todayLastForecast[k]].weather[0].icon}`;
+                var iconCode = allIcons[i][k]; 
                 var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
                 var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
                 var headPlusImg = $(`<th></th>`); 
@@ -382,19 +388,36 @@ $(document).ready(function() {
             var nrow = $('<tr>')
             // headers for time
             if (j==0){
-              nrow.append('<th>    </th>');
-              nrow.append(`<th>${allWeather[i][j][0]}<th>`);
+              nrow.append('<th></th>');
+              var iconCode = allIcons[i][0]; 
+              var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
+              var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+              var headPlusImg = $(`<th></th>`); 
+              headPlusImg.html(`${allWeather[i][j][0]}`);
+              headPlusImg.append(iconImg); 
+              nrow.append(headPlusImg);
+
+              // nrow.append('<th>    </th>');
+              // nrow.append(`<th>${allWeather[i][j][0]}<th>`);
               if (allWeather[i][j].length>1){
-                nrow.append(`<th>${allWeather[i][j][1]}<th>`);}
+                var iconCode = allIcons[i][1]; 
+                var iconURL = `http://openweathermap.org/img/w/${iconCode}.png`;
+                var iconImg=`<img class='icons' src="${iconURL}" alt="Weather icon">`; 
+                var headPlusImg = $(`<th></th>`); 
+                headPlusImg.html(`${allWeather[i][j][1]}`);
+                headPlusImg.append(iconImg); 
+                nrow.append(headPlusImg);
+                // nrow.append(`<th>${allWeather[i][j][1]}<th>`);
+              }
             }
             // load other weather conditions
             else {
               var weatherVal = allWeather[i][j][0]
               nrow.append(`<td>${weatherConditions[j]}: </td>`);
-              nrow.append(`<td>${weatherVal}<td>`);
+              nrow.append(`<td>${weatherVal}</td>`);
               if (allWeather[i][j].length>1){
                 var weatherVal = allWeather[i][j][1]
-                nrow.append(`<td>${weatherVal}<td>`);
+                nrow.append(`<td>${weatherVal}</td>`);
               }
             }
             tableWeather.append(nrow);
