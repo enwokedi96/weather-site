@@ -126,7 +126,7 @@ $(document).ready(function() {
         today.html("");
 
         cityInput = $('#search-input').val();
-        lonLatURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=${searchLimit}&appid=${apiKey}` 
+        lonLatURL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=${searchLimit}&appid=${apiKey}` 
         
         $('#search-input').val("")
         // get locations latitude and longitude 
@@ -145,7 +145,7 @@ $(document).ready(function() {
           
           lon = response[0].lon;
           lat = response[0].lat;
-          queryURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+          queryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
           // load weather and forecasts using longitude and latitude
           $.ajax({
