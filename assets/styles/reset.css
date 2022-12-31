@@ -6,3 +6,7 @@ body{
 header{
     background-image: linear-gradient(red, blue);
 }
+
+#search-form{
+    border-bottom: 2px black solid;
+}

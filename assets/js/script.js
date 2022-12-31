@@ -306,7 +306,7 @@ $(document).ready(function() {
 
             // ensure there are no duplicate buttons and then prepend
             $(`#${searchCity}`).remove();
-            searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block" id="${searchCity}">${searchCity}</button>`);
+            searchFormHistory.prepend(`<button type="button" class="btn btn-info btn-block mt-2" id="${searchCity}">${searchCity}</button>`);
             
           })
         })
