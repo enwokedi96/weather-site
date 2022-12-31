@@ -2,3 +2,7 @@ body{
     background-color: bisque;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+
+header{
+    background-image: linear-gradient(red, blue);
+}

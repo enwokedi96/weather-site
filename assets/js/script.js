@@ -32,6 +32,9 @@ $(document).ready(function() {
 
     // object to store weather icon codes for today and 5-day forecasts
     var storeIconCodes = new Object();
+
+    // vain designs
+    //$('.weather-header').css({'background-image': 'linear-gradient(red, blue);'})
                            
     // read and save tablular data to array and consequently, localStorage
     function tableToArray(tableId,objId){
