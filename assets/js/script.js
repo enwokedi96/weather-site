@@ -163,7 +163,7 @@ $(document).ready(function() {
             today.append(todayHeading);
             today.css({'border':'solid 1px black', 'padding':'10px'})
             var tableWeather = $("<table id='todayTable'></table>");
-            tableWeather.css({'table-layout': 'fixed','width':'75%'})
+            tableWeather.css({'table-layout': 'fixed','width':'100%'})
             var splitDatetime = result.list[0].dt_txt.split(/(\s+)/);
             
             // search within 18 hours for the last-listed 
@@ -386,7 +386,7 @@ $(document).ready(function() {
         // load todays section
         if (i==0){
           var tableWeather = $("<table></table>");
-          tableWeather.css({'table-layout': 'fixed','width':'75%'})
+          tableWeather.css({'table-layout': 'fixed','width':'100%'})
           todayHeading = $('<div></div>'); 
           todayHeading.append(`<h2>${cityClicked} Today (${moment().format('LL')})</h2>`);
           today.append(todayHeading);
