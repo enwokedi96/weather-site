@@ -1,7 +1,7 @@
 # weather-site
 User-friendly website that loads current and future weather conditions using the 5-days 3-hours interval forecast API on [Open Weather Map](https://openweathermap.org/). The weather conditions displayed on this site are humidity, temperature and wind speed.
 
-The live deployment of this website is available [here]().
+The live deployment of this website is available [here](https://enwokedi96.github.io/weather-site/).
 
 The entire website is split into 3 mainsections; 
 * The search and history section: has an input field which takes in the city or region for which the user wishes to display the weather. This section also logs the history of searches as buttons. When clicked, these buttons load  and display the previously seen forecasts. Finally, a nice red button was added to clear the user screen and all stored data.
