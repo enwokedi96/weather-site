@@ -10,7 +10,7 @@ $(document).ready(function() {
     var today = $('#today')
     var forecast = $('#forecast')
     var searchFormHistory = $('#history'); 
-    var apiKey = ""; 
+    var apiKey = config.myKey; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
     const forecastColDesigns = {'background-color':'gray',
@@ -109,13 +109,13 @@ $(document).ready(function() {
       })
 
     // monitor change in api key input, grab key and disable input field
-    $('#api-input').on('change',function(event){
-        // prevent default input clear
-        event.preventDefault();
-        apiKey = $('#api-input').val();
-        $('#api-input').val('')
-        $('#api-input').attr('disabled',true); //remove();
-    })
+    // $('#api-input').on('change',function(event){
+    //     // prevent default input clear
+    //     event.preventDefault();
+    //     apiKey = $('#api-input').val();
+    //     $('#api-input').val('')
+    //     $('#api-input').attr('disabled',true); //remove();
+    // })
 
     // get location on click event 
     $('#search-button').on('click',function(event){
@@ -353,11 +353,12 @@ $(document).ready(function() {
           console.log(response)
           // check condition when there is no response
           if (response.responseJSON.cod == 401) {
-            console.log('Wrong open weather api key! Please check if pasted correctly'); 
+            console.log('Wrong open weather api key! Please check your key!'); 
             today.html(""); forecast.html("");
             today.css({'border':'solid 1px black', 'padding':'10px'})
             today.text(response.responseJSON.message)
-            $('#api-input').attr('disabled',false); }
+            //$('#api-input').attr('disabled',false); 
+          }
         });
       //searchForm.append(searchFormHistory);
     })
