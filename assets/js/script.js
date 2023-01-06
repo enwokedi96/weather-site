@@ -9,7 +9,8 @@ $(document).ready(function() {
     var searchLimit = 1;
     var today = $('#today')
     var forecast = $('#forecast')
-    var searchFormHistory = $('#history'); 
+    var searchFormHistory = $('#history');
+    const config = require('config.js/config'); 
     var apiKey = config.myKey; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
