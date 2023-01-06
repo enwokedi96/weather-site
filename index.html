@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <header class="container-fluid text-center text-white bg-dark p-2 weather-header">
+  <header class="container-fluid text-center text-white bg-dark p-1 weather-header">
     <h1>Weather Dashboard</h1>
     <!-- <div class="api">
       <input class="form-input" disabled="true" type="text" id="api-input" placeholder="Paste secure API key"/>
@@ -22,7 +22,7 @@
   <!-- max-width for ultra wide resolutions -->
   <div class="container-fluid" style="max-width: 1400px">
     <div class="row">
-      <aside class="col-lg-3 pb-3">
+      <aside class="col-lg-3 col-md-3 col-sm-12 pb-3">
         <h2 id="form-heading" class="mt-1 h3 form-label">
           Search for a City:
         </h2>
@@ -41,9 +41,12 @@
           </div>
         </form>
         <div class="list-group" id="history"></div>
+        
+        <div class="border-top border-dark mt-2"><button type="button" id="clear-btn" class="btn btn-danger btn-block mt-3">Clear Page</button> </div>
+        
       </aside>
 
-      <div class="col-lg-9 pb-3">
+      <div class="col-lg-9 col-md-9 col-sm-12 pb-3">
         <section id="today" class="mt-3" role="region" aria-live="polite"></section>
         <section id="forecast" class="row mt-3" role="region" aria-live="polite"></section>
       </div>

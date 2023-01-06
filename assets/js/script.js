@@ -10,7 +10,7 @@ $(document).ready(function() {
     var today = $('#today')
     var forecast = $('#forecast')
     var searchFormHistory = $('#history');
-    const config = require('config.js/config'); 
+    //const config = require('config.js/config'); 
     var apiKey = config.myKey; 
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
@@ -84,29 +84,16 @@ $(document).ready(function() {
       return arr;
     }
 
-    // add button to clear history and page 
-    var clearDiv = $('<div id="clear"></div>');
-    clearDiv.css({'border-top':'solid 3px black', 
-                  'margin-top':'20px',
-                  'margin-bottom':'50px'})
-    var clearButton = $(`<button type="button" class="btn btn-danger btn-block mt-3">Clear Page</button>`); 
-    clearButton.css({'position': 'relative',
-                    'border-top':'5px gray solid',
-                    'border-bottom':'5px gray solid',
-                    'border-radius':'50%'})
-    clearDiv.append(clearButton);
-    searchFormHistory.append(clearDiv);
-
     // add event to clear page and buttons 
-    $('#clear').on('click', function(){
+    $('#clear-btn').on('click', function(){
         console.log('clear history and page!!');
         document.querySelectorAll('.btn-info').forEach(e => e.remove());
         today.html(""); forecast.html("");
         today.css({'border':'0px'});
         localStorage.clear();
         // clear stored spi key and enable api input field again
-        apiKey = "";
-        $('#api-input').attr('disabled',false);
+        // apiKey = "";
+        // $('#api-input').attr('disabled',false);
       })
 
     // monitor change in api key input, grab key and disable input field
@@ -350,16 +337,16 @@ $(document).ready(function() {
             
           })
         // check if api key is not entered or incorrect, prompt user to enter the required api key
-        }).catch((response)=> {
-          console.log(response)
-          // check condition when there is no response
-          if (response.responseJSON.cod == 401) {
-            console.log('Wrong open weather api key! Please check your key!'); 
-            today.html(""); forecast.html("");
-            today.css({'border':'solid 1px black', 'padding':'10px'})
-            today.text(response.responseJSON.message)
-            //$('#api-input').attr('disabled',false); 
-          }
+        // }).catch((response)=> {
+        //   console.log(response)
+        //   // check condition when there is no response
+        //   if (response.responseJSON.cod == 401) {
+        //     console.log('Wrong open weather api key! Please check your key!'); 
+        //     today.html(""); forecast.html("");
+        //     today.css({'border':'solid 1px black', 'padding':'10px'})
+        //     today.text(response.responseJSON.message)
+        //     //$('#api-input').attr('disabled',false); 
+        //   }
         });
       //searchForm.append(searchFormHistory);
     })
