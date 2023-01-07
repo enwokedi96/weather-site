@@ -1,3 +1,6 @@
+require('dotenv').config()
+//console.log(process.env);
+
 $(document).ready(function() {
     var lon; 
     var lat;
@@ -11,7 +14,10 @@ $(document).ready(function() {
     var forecast = $('#forecast')
     var searchFormHistory = $('#history');
     //const config = require('config.js/config'); 
-    var apiKey = config.myKey; 
+
+    var apiKey = process.env.API_KEY //config.myKey; 
+    const port = process.env.PORT || 3000;
+
     var weatherConditions = ['','Humidity','Temp','Wind']
     const numDisplayRows = 4;
     const forecastColDesigns = {'background-color':'gray',
